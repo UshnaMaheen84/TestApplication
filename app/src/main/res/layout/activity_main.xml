@@ -6,28 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/wifiToggleButton"
+
+    <ToggleButton
+        android:id="@+id/ToggleButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Toggle WiFi"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp" />
-
-    <Button
-        android:id="@+id/bluetoothToggleButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Toggle Bluetooth"
-        android:layout_below="@id/wifiToggleButton"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp" />
-
+        android:layout_marginTop="16dp"
+        android:checked="true"
+        android:textOff="OFF"
+        android:textOn="ON"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/deviceRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/bluetoothToggleButton"
+        android:layout_below="@id/ToggleButton"
         android:layout_marginTop="16dp" />
 
 </RelativeLayout>
