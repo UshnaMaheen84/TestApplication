@@ -9,7 +9,9 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -102,9 +104,21 @@ public class MainActivity extends AppCompatActivity {
 
     private void startDeviceDiscovery() {
 
+        Log.e("log checking","in startDeviceDiscovery");
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
+            Log.e("log checking","in startDeviceDiscovery checkSelfPermission");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+
+                if ((this.checkSelfPermission(Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED)
+                        || (this.checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED)) {
+
+                    Log.w(getClass().getName(), "requestBluetoothPermissions() BLUETOOTH_SCAN AND BLUETOOTH_CONNECT permissions needed => requesting them...");
+
+                }
+            }
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
             //                                          int[] grantResults)
@@ -119,12 +133,16 @@ public class MainActivity extends AppCompatActivity {
     private final BroadcastReceiver deviceReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+            Log.e("log checking","in BroadcastReceiver");
+
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 if (device != null) {
                     if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                         // TODO: Consider calling
                         //    ActivityCompat#requestPermissions
+                        Log.e("log checking","in BroadcastReceiver checkSelfPermission");
+
                         // here to request the missing permissions, and then overriding
                         //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
                         //                                          int[] grantResults)
@@ -148,31 +166,39 @@ public class MainActivity extends AppCompatActivity {
             int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CODE_LOCATION_PERMISSION) {
+
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 scanWifiNetworks();
+                Log.e("log checking","in scanWifiNetworks PERMISSION_GRANTED");
+
             } else {
                 Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
             }
-            if (requestCode == PERMISSION_REQUEST_BLUETOOTH) {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startDeviceDiscovery();
-                } else {
-                    // Permission denied
-                    // Handle this case
-                    Toast.makeText(this, "Bluetooth permission denied", Toast.LENGTH_SHORT).show();
 
-                }
+        }
+        if (requestCode == PERMISSION_REQUEST_BLUETOOTH) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.e("log checking","in Bluetooth PERMISSION_GRANTED");
+
+                startDeviceDiscovery();
+            } else {
+                Toast.makeText(this, "Bluetooth permission denied", Toast.LENGTH_SHORT).show();
+
             }
         }
     }
 
     private void scanWifiNetworks() {
+        Log.e("log checking","in scanWifiNetworks");
+
         WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         if (wifiManager != null) {
             wifiManager.startScan();
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions
+                Log.e("log checking","in scanWifiNetworks checkSelfPermission");
+
                 // here to request the missing permissions, and then overriding
                 //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
                 //                                          int[] grantResults)
